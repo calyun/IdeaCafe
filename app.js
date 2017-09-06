@@ -1,45 +1,113 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
+var express     = require("express"),
+    app         = express(),
+    bodyParser  = require("body-parser"),
+    mongoose    = require("mongoose"),
+    seedDB      = require("./seeds"),
+    Talk        = require("./models/talk"),
+    Comment     = require("./models/comment"),
+    User        = require("./models/user");
 
+// APP CONFIG
+mongoose.connect("mongodb://localhost/bread_check");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
+mongoose.Promise = global.Promise;
+
+// database seeder
+//seedDB();
 
 app.get("/", function(req, res){
     res.render("landing");
 });
 
-var foods = [
-        {name: "bread", image: "https://static01.nyt.com/images/2017/02/16/dining/16COOKING-NOKNEADBREAD1/16COOKING-NOKNEADBREAD1-videoSixteenByNineJumbo1600.jpg", expiration: "August 15"},
-        {name: "eggs", image: "http://d2gk7xgygi98cy.cloudfront.net/6383-3-large.jpg", expiration: "August 26"},
-        {name: "Greek yogurt", image: "https://images.heb.com/is/image/HEBGrocery/001297099-1?id=fuwQT0&fmt=jpg&fit=constrain,1&wid=296&hei=296", expiration: "August 22"},
-        {name: "bread", image: "https://static01.nyt.com/images/2017/02/16/dining/16COOKING-NOKNEADBREAD1/16COOKING-NOKNEADBREAD1-videoSixteenByNineJumbo1600.jpg", expiration: "August 15"},
-        {name: "eggs", image: "http://d2gk7xgygi98cy.cloudfront.net/6383-3-large.jpg", expiration: "August 26"},
-        {name: "Greek yogurt", image: "https://images.heb.com/is/image/HEBGrocery/001297099-1?id=fuwQT0&fmt=jpg&fit=constrain,1&wid=296&hei=296", expiration: "August 22"},
-        {name: "bread", image: "https://static01.nyt.com/images/2017/02/16/dining/16COOKING-NOKNEADBREAD1/16COOKING-NOKNEADBREAD1-videoSixteenByNineJumbo1600.jpg", expiration: "August 15"},
-        {name: "eggs", image: "http://d2gk7xgygi98cy.cloudfront.net/6383-3-large.jpg", expiration: "August 26"},
-        {name: "Greek yogurt", image: "https://images.heb.com/is/image/HEBGrocery/001297099-1?id=fuwQT0&fmt=jpg&fit=constrain,1&wid=296&hei=296", expiration: "August 22"},
-    ];
-        
-app.get("/foods", function(req, res){
-    res.render("foods", {foods: foods});
+// RESTful Index route!        
+app.get("/talks", function(req, res){
+    // Method from Talk schema
+    Talk.find({}, function(err, allTalks){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("talks/index", {talks:allTalks});   
+        }
+    });
 });
 
-// send post request to add new food to foods array
-app.post("/foods", function(req, res) {
+// CREATE - send the form to make the new item
+// send post request to add new Talk to Talks array
+app.post("/talks", function(req, res) {
+    // Form fields
     var name = req.body.name;
     var image = req.body.image;
-    var newFood = {name: name, image: image};
-    foods.push(newFood);
-    res.redirect("/foods");
+    var desc = req.body.description;
+    var video = req.body.video;
+    var newTalk = {name: name, image: image, description: desc, video: video};
+    // create new Talk item + redirects
+    Talk.create(newTalk, function(err, newCreation){
+        if(err){
+            console.log(err);
+        } else {
+            res.redirect("/talks");
+        }
+    });
 });
 
-app.get("/foods/new", function(req, res){
-   res.render("new.ejs"); 
+// NEW - get the form
+app.get("/talks/new", function(req, res){
+   res.render("talks/new"); 
+});
+
+// SHOW route
+app.get("/talks/:id", function(req, res){
+    
+    Talk.findById(req.params.id).populate("comments").exec(function(err, foundTalk){
+       if(err){
+           console.log(err);
+       } else {
+           res.render("talks/show", {talk: foundTalk});
+       }
+    });
+});
+
+//==========================
+//      COMMENTS ROUTES
+//==========================
+
+app.get("/talks/:id/comments/new", function(req, res){
+    Talk.findById(req.params.id, function(err, talk){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("comments/new", {talk: talk});
+        }
+    });
+});
+
+app.post("/talks/:id/comments", function(req, res){
+    Talk.findById(req.params.id, function(err, talk){
+       if(err){
+           console.log(err);
+           res.redirect("/talks");
+       } else {
+           Comment.create(req.body.comment, function(err, comment){
+               if(err){
+                   console.log(err);
+               } else {
+                   talk.comments.push(comment);
+                   talk.save();
+                   res.redirect('/talks/' + talk._id);
+               }
+           });
+       }
+    });
+    
+    // post new comment
+    
+    // associate comment to talk
 });
 
 app.listen(process.env.PORT, process.env.IP, function(){
-    console.log("BreadCheck server has started!");
+    console.log("IdeaCafe server has started!");
 });
 
 // August 13, 2017

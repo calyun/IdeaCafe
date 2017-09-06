@@ -1,0 +1,44 @@
+<% include ../partials/header %>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">IdeaCafe</p>
+            <div class="list-group">
+                <li class="list-group-item active">Info 1</li>
+                <li class="list-group-item">Info 2</li>
+                <li class="list-group-item">Info 3</li>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail">
+                <img class="img-responsive" src="<%= talk.image %>">
+                <div class="caption-full">
+                    <h4 class="pull-right">PLACEHOLDER</h4>
+                    <h4><a><%= talk.name %></a></h4>
+                    <iframe src="https://embed.ted.com/talks/<%= talk.video %>" width="854px" height="480px" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                    <p><%= talk.description %></p>
+                </div>
+            </div>
+            <div class="well">
+                <div class="text-right">
+                    <a class="btn btn-success" href="/talks/<%= talk._id %>/comments/new">Add New Comment</a>
+                </div>
+                <hr> <!--horizontal rule, spacing-->
+                <% talk.comments.forEach(function(comment){ %>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <font color="blue"><strong><%= comment.author %></strong></font>
+                            <span class="pull-right"> DATE AGO </span>
+                        </div>
+                        <p>
+                            <%= comment.text %>
+                        </p>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% include ../partials/footer %>
