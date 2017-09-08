@@ -3,28 +3,27 @@
     
     <div class="row">
         
-        <h1 style="text-align: center;">Submit a New Talk</h1>
+        <h1 style="text-align: center;">Edit <%= talk.name %></h1>
         <!-- width, top/bot left/right margins, -->
         <div style="width: 30%; margin: 30px auto;">
-            <form action="/talks" method="POST">
+            <form action="/talks/<%= talk._id %>?_method=PUT" method="POST">
                 <div class="form-group">
-                      <input class="form-control" type="text" name="name" placeholder="name">
+                      <input class="form-control" type="text" name="talk[name]" value="<%= talk.name %>">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="image" placeholder="image url">
+                    <input class="form-control" type="text" name="talk[image]" value="<%= talk.image %>">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="video" placeholder="video url">
+                    <input class="form-control" type="text" name="talk[video]" value="<%= talk.video %>">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="description" placeholder="description">
+                    <input class="form-control" type="text" name="talk[description]" value="<%= talk.description %>">
                 </div>
                 <div class="form-group"></div>
                     <button class="btn btn-lg btn-primary btn-block">Submit!</button>
                 </div>
             </form>
                 
-            <!-- linking between talks page -->
             <a href="/talks">Go Back</a>
         </div>
     </div>

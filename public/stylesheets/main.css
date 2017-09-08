@@ -13,3 +13,7 @@ body {
 .thumbnail .caption {
     padding: 9px;
 }
+
+#delete-talk {
+    display: inline;
+}

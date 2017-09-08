@@ -2,109 +2,57 @@ var express     = require("express"),
     app         = express(),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
+    passport    = require("passport"),
+    LocalStrategy   = require("passport-local"),
+    methodOverride  = require("method-override"),
     seedDB      = require("./seeds"),
     Talk        = require("./models/talk"),
     Comment     = require("./models/comment"),
     User        = require("./models/user");
 
+// require routes    
+var commentRoutes   = require("./routes/comments"),
+    talkRoutes      = require("./routes/talks"),
+    indexRoutes     = require("./routes/index");
+
 // APP CONFIG
-mongoose.connect("mongodb://localhost/bread_check");
+mongoose.connect("mongodb://localhost/idea_cafe");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 mongoose.Promise = global.Promise;
 
 // database seeder
 //seedDB();
 
+// PASSPORT CONFIGURATION
+app.use(require("express-session")({
+    secret: "AI is the future!",
+    resave: false,
+    saveUninitialized: false,    // security
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());       // determines subset user data to store in session (serialized user)
+passport.deserializeUser(User.deserializeUser());   // matches key to user, passing entire user object
+
+// middlewave, passes currentUser to all routes
+app.use(function(req, res, next){
+    res.locals.currentUser = req.user;
+    next();
+});
+
+// tells express app to use routes
+app.use("", indexRoutes);
+app.use("/talks", talkRoutes);
+app.use("/talks/:id/comments", commentRoutes);
+
 app.get("/", function(req, res){
     res.render("landing");
 });
 
-// RESTful Index route!        
-app.get("/talks", function(req, res){
-    // Method from Talk schema
-    Talk.find({}, function(err, allTalks){
-        if(err){
-            console.log(err);
-        } else {
-            res.render("talks/index", {talks:allTalks});   
-        }
-    });
-});
-
-// CREATE - send the form to make the new item
-// send post request to add new Talk to Talks array
-app.post("/talks", function(req, res) {
-    // Form fields
-    var name = req.body.name;
-    var image = req.body.image;
-    var desc = req.body.description;
-    var video = req.body.video;
-    var newTalk = {name: name, image: image, description: desc, video: video};
-    // create new Talk item + redirects
-    Talk.create(newTalk, function(err, newCreation){
-        if(err){
-            console.log(err);
-        } else {
-            res.redirect("/talks");
-        }
-    });
-});
-
-// NEW - get the form
-app.get("/talks/new", function(req, res){
-   res.render("talks/new"); 
-});
-
-// SHOW route
-app.get("/talks/:id", function(req, res){
-    
-    Talk.findById(req.params.id).populate("comments").exec(function(err, foundTalk){
-       if(err){
-           console.log(err);
-       } else {
-           res.render("talks/show", {talk: foundTalk});
-       }
-    });
-});
-
-//==========================
-//      COMMENTS ROUTES
-//==========================
-
-app.get("/talks/:id/comments/new", function(req, res){
-    Talk.findById(req.params.id, function(err, talk){
-        if(err){
-            console.log(err);
-        } else {
-            res.render("comments/new", {talk: talk});
-        }
-    });
-});
-
-app.post("/talks/:id/comments", function(req, res){
-    Talk.findById(req.params.id, function(err, talk){
-       if(err){
-           console.log(err);
-           res.redirect("/talks");
-       } else {
-           Comment.create(req.body.comment, function(err, comment){
-               if(err){
-                   console.log(err);
-               } else {
-                   talk.comments.push(comment);
-                   talk.save();
-                   res.redirect('/talks/' + talk._id);
-               }
-           });
-       }
-    });
-    
-    // post new comment
-    
-    // associate comment to talk
-});
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("IdeaCafe server has started!");
