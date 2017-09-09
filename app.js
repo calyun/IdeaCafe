@@ -23,7 +23,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 mongoose.Promise = global.Promise;
 
-// database seeder
+// database seeder - obsolete
 //seedDB();
 
 // PASSPORT CONFIGURATION

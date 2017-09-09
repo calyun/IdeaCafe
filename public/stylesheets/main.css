@@ -17,3 +17,7 @@ body {
 #delete-talk {
     display: inline;
 }
+
+#delete-comment {
+    display: inline;
+}

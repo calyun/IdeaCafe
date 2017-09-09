@@ -1,6 +1,7 @@
 var express = require("express"),
     router  = express.Router({mergeParams: true}),
-    Talk    = require("../models/talk")
+    Talk    = require("../models/talk"),
+    middleware  = require("../middleware")
     ;
 
 //====================
@@ -21,7 +22,7 @@ router.get("/", function(req, res){
 
 // CREATE - send the form to make the new item
 // send post request to add new Talk to Talks array
-router.post("/", isLoggedIn, function(req, res) {
+router.post("/", middleware.isLoggedIn, function(req, res) {
     // Form fields
     var name = req.body.name;
     var image = req.body.image;
@@ -43,7 +44,7 @@ router.post("/", isLoggedIn, function(req, res) {
 });
 
 // NEW - get the form
-router.get("/new", isLoggedIn, function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
    res.render("talks/new"); 
 });
 
@@ -61,7 +62,7 @@ router.get("/:id", function(req, res){
 
 
 // EDIT route
-router.get("/:id/edit", isTalkOwner, function(req, res){
+router.get("/:id/edit", middleware.isTalkOwner, function(req, res){
     Talk.findById(req.params.id, function(err, foundTalk){
         res.render("talks/edit", {talk: foundTalk});   
     });
@@ -69,7 +70,7 @@ router.get("/:id/edit", isTalkOwner, function(req, res){
 
 
 // UPDATE route
-router.put("/:id", isTalkOwner, function(req, res){
+router.put("/:id", middleware.isTalkOwner, function(req, res){
     Talk.findByIdAndUpdate(req.params.id, req.body.talk, function(err, updatedTalk)
     {
         if (err) {
@@ -82,8 +83,8 @@ router.put("/:id", isTalkOwner, function(req, res){
 
 
 // DELETE route
-router.delete("/:id", isTalkOwner, function(req, res){
-    Talk.findByIdAndRemove(req.params.id, function(err, foundTalk){
+router.delete("/:id", middleware.isTalkOwner, function(req, res){
+    Talk.findByIdAndRemove(req.params.id, function(err){
         if(err){
             res.redirect("/talks");
         } else {
@@ -92,31 +93,5 @@ router.delete("/:id", isTalkOwner, function(req, res){
     });
 });
 
-
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){      // if user logged in
-        return next();
-    }
-    res.redirect("/login");         // if not logged in
-}
-
-function isTalkOwner(req, res, next){
-    if (req.isAuthenticated()){
-        Talk.findById(req.params.id, function(err, foundTalk){
-            if(err){
-                res.redirect("back");
-            } else {
-                // if id matches
-                if (foundTalk.author.id.equals(req.user._id)) {
-                    next();
-                } else {
-                    res.redirect("back");
-                }
-            }
-        });
-    } else {
-        res.send("You must be logged in to access this functionality.");
-    }
-}
 
 module.exports = router;

@@ -1,13 +1,15 @@
 var express = require("express"),
     router  = express.Router({mergeParams: true}),  // allows access of e.g. :id param
     Comment = require("../models/comment"),
-    Talk    = require("../models/talk");
+    Talk    = require("../models/talk"),
+    middleware  = require("../middleware")
+    ;
 
 //==========================
 //      COMMENTS ROUTES
 //==========================
 // new command form
-router.get("/new", isLoggedIn, function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
     Talk.findById(req.params.id, function(err, talk){
         if(err){
             console.log(err);
@@ -18,7 +20,7 @@ router.get("/new", isLoggedIn, function(req, res){
 });
 
 // create comment
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
     Talk.findById(req.params.id, function(err, talk){
        if(err){
            console.log(err);
@@ -42,11 +44,37 @@ router.post("/", isLoggedIn, function(req, res){
     });
 });
 
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){      // if user logged in
-        return next();
-    }
-    res.redirect("/login");         // if not logged in
-}
+// EDIT route
+router.get("/:comment_id/edit", middleware.isCommentOwner, function(req, res){
+    Comment.findById(req.params.comment_id, function(err, foundComment){
+        if(err){
+            res.redirect("back");
+        } else {
+            res.render("comments/edit", {talk_id: req.params.id, comment: foundComment});
+        }
+    });
+});
+
+// UPDATE route
+router.put("/:comment_id", middleware.isCommentOwner, function(req, res){
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
+        if (err) {
+            res.redirect("back");
+        } else {
+            res.redirect("/talks/" + req.params.id);
+        }
+    });
+});
+
+// DELETE route
+router.delete("/:comment_id", middleware.isCommentOwner, function(req, res){
+    Comment.findByIdAndRemove(req.params.comment_id, function(err){
+        if(err){
+            res.redirect("/talks/" + req.params.id);
+        } else {
+            res.redirect("/talks/" + req.params.id);
+        }
+    });
+});
 
 module.exports = router;
