@@ -29,7 +29,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
            // associate comment to talk
            Comment.create(req.body.comment, function(err, comment){
                if(err){
-                   console.log(err);
+                   req.flash("error", "Comment could not be created. Please contact the admin.")
                } else {
                    comment.author.id = req.user._id;
                    comment.author.username = req.user.username;
@@ -37,6 +37,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
                    comment.save();
                    talk.comments.push(comment);
                    talk.save();
+                   req.flash("success", "Comment posted");
                    res.redirect('/talks/' + talk._id);
                }
            });
@@ -72,6 +73,7 @@ router.delete("/:comment_id", middleware.isCommentOwner, function(req, res){
         if(err){
             res.redirect("/talks/" + req.params.id);
         } else {
+            res.flash("success", "Comment deleted");
             res.redirect("/talks/" + req.params.id);
         }
     });
