@@ -30,7 +30,7 @@ mongoose.Promise = global.Promise;
 
 // PASSPORT CONFIGURATION
 app.use(require("express-session")({
-    secret: "AI is the future!",
+    secret: "AI safety policy is a global priority",
     resave: false,
     saveUninitialized: false,    // security
 }));

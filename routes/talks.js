@@ -26,9 +26,10 @@ function getTalkInfo(req, res){
     request(req.body.video_file_url, function(error, response, body){
         if (!error && response.statusCode == 200) {
             var data = JSON.parse(body);
-            req.body.video_thumb = data["thumbnail_url"];
+            req.body.video_thumb = data["thumbnail_url"].replace("240x180.jpg", "480x360.jpg");
             req.body.video_name = data["title"];
             req.body.video_descr = data["description"];
+        
             createTalk(req, res);
         }
     });
@@ -58,8 +59,9 @@ function createTalk(req, res) {
         id: req.user._id,
         username: req.user.username,
     };
+    var rating = req.body.rating;
     
-    var newTalk = {name: name, image: image, description: descr, video: video, author: author};
+    var newTalk = {name: name, image: image, description: descr, video: video, author: author, rating: rating};
     // create new Talk item + redirects
     Talk.create(newTalk, function(err, newCreation){
         if(err){
@@ -113,6 +115,7 @@ router.get("/:id/edit", middleware.isTalkOwner, function(req, res){
         res.render("talks/edit", {talk: foundTalk});   
     });
 });
+
 
 
 // UPDATE route

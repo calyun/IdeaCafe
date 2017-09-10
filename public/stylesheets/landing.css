@@ -1,0 +1,89 @@
+body {
+  background-color: #000;
+  /*black*/
+}
+
+#landing-header {
+    z-index: 1;
+    position: relative;
+    text-align: center;
+    padding-top: 30vh;
+}
+
+#landing-header h1 {
+  color: #fff;
+}
+
+.slideshow { 
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;        /* lower depth than landing-header */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slideshow li { 
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  z-index: 0;
+  animation: imageAnimation 60s linear infinite; 
+}
+
+/* IDEA: Quick fade in+out TED logo between each image transition */
+.slideshow li:nth-child(1) { 
+  background-image: url(https://pe.tedcdn.com/images/ted/7c7af6ce024183a52fd58415ec612fa2d76ad68a_480x360.jpg?lang=en); 
+}
+.slideshow li:nth-child(2) { 
+  background-image: url(http://pl.tedcdn.com/social/ted-logo-fb.png);
+  animation-delay: 10s; 
+}
+.slideshow li:nth-child(3) { 
+  background-image: url(https://pe.tedcdn.com/images/ted/4ca203c69b8121984967b2a53d16ef58718dd5c7_480x360.jpg?lang=en);
+  animation-delay: 20s; 
+}
+.slideshow li:nth-child(4) { 
+  background-image: url(https://pe.tedcdn.com/images/ted/7c41d305ffe47c0f605eeef6974e98ed27de1390_480x360.jpg?lang=en);
+  animation-delay: 30s; 
+}
+.slideshow li:nth-child(5) { 
+  background-image: url(https://pe.tedcdn.com/images/ted/3820be698584de25ea375c0bf57ee620caf94b8d_480x360.jpg?lang=en);
+  animation-delay: 40s; 
+}
+.slideshow li:nth-child(6) { 
+  background-image: url(https://pe.tedcdn.com/images/ted/90619_480x360.jpg?lang=en);
+  animation-delay: 50s; 
+}
+
+@keyframes imageAnimation { 
+/* cross-fading */
+  0% { 
+    opacity: 0; 
+    animation-timing-function: ease-in;
+  }
+  10% {
+    opacity: 1;
+    animation-timing-function: ease-out;
+  }
+  20% {
+    opacity: 1
+  }
+  30% {
+    opacity: 0
+  }
+}
+
+/* Older browser support - class added by modernizr */
+.no-cssanimations .slideshow li {
+	opacity: 1;
+}

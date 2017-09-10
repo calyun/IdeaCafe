@@ -1,19 +1,19 @@
 <% include ../partials/header %>
 <div class="container">
     <div class="row">
-        <div class="col-md-3">
-            <p class="lead">IdeaCafe</p>
-            <div class="list-group">
-                <li class="list-group-item active">Info 1</li>
-                <li class="list-group-item">Info 2</li>
-                <li class="list-group-item">Info 3</li>
-            </div>
-        </div>
+        <!--<div class="col-md-3">-->
+        <!--    <p class="lead">IdeaCafe</p>-->
+        <!--    <div class="list-group">-->
+        <!--        <li class="list-group-item active">Info 1</li>-->
+        <!--        <li class="list-group-item">Info 2</li>-->
+        <!--        <li class="list-group-item">Info 3</li>-->
+        <!--    </div>-->
+        <!--</div>-->
         <div class="col-md-9">
             <div class="thumbnail">
-                <img class="img-responsive" src="<%= talk.image %>">
+                <!--<img class="img-responsive" src="<%/*= talk.image */%>">-->
                 <div class="caption-full">
-                    <h4 class="pull-right">PLACEHOLDER</h4>
+                    <h4 class="pull-right">Submitter's rating: <%= talk.rating %></h4>
                     <h4><a><%= talk.name %></a></h4>
 
                         <iframe src="<%= talk.video %>" width="854px" height="480px" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>

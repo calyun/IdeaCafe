@@ -7,17 +7,20 @@
         <!-- width, top/bot left/right margins, -->
         <div style="width: 30%; margin: 30px auto;">
             <form action="/talks/<%= talk._id %>?_method=PUT" method="POST">
-                <div class="form-group">
-                      <input class="form-control" type="text" name="talk[name]" value="<%= talk.name %>">
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="talk[image]" value="<%= talk.image %>">
-                </div>
+                <!--<div class="form-group">-->
+                <!--    <input class="form-control" type="text" name="talk[image]" value="<%= talk.image %>">-->
+                <!--</div>-->
                 <div class="form-group">
                     <input class="form-control" type="text" name="talk[video]" value="<%= talk.video %>">
                 </div>
                 <div class="form-group">
+                      <input class="form-control" type="text" name="talk[name]" value="<%= talk.name %>">
+                </div>
+                <div class="form-group">
                     <input class="form-control" type="text" name="talk[description]" value="<%= talk.description %>">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" name="talk[rating]" value="<%= talk.value %>" placeholder="rating out of 5 (optional)" min="3.0" step="0.1" max="5.0">
                 </div>
                 <div class="form-group"></div>
                     <button class="btn btn-lg btn-primary btn-block">Submit!</button>

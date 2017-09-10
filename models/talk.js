@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 
-// Mongoose Schema of Food
+// Mongoose Schema of Talk
 var talkSchema = new mongoose.Schema({
     name: String,
     image: String,
@@ -18,6 +18,8 @@ var talkSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment"
     }],
+    // TODO: Attach date 
+    rating: String,
 });
 
 // gives us the talkSchema as Talk
