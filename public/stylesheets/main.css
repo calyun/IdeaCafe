@@ -14,10 +14,21 @@ body {
     padding: 9px;
 }
 
+.form-login {
+    width: 30%; 
+    margin: auto;
+}
+
+.form-new-talk {
+    width: 50%;
+    margin: 20px auto;
+}
+
+
 #delete-talk {
-    display: inline;
+    display: inline !important;
 }
 
 #delete-comment {
-    display: inline;
+    display: inline !important;
 }

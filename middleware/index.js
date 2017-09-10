@@ -13,6 +13,10 @@ middlewareObj.isCommentOwner = function(req, res, next){
             if(err){
                 res.redirect("back");
             } else {
+                if (!foundComment) {
+                    req.flash("error", "Comment not found.");
+                    return res.redirect("back");
+                }
                 // if author id matches
                 if (foundComment.author.id.equals(req.user._id)) {
                     next();
@@ -35,6 +39,10 @@ middlewareObj.isTalkOwner = function(req, res, next){
                 req.flash("error", "Talk not found");
                 res.redirect("back");
             } else {
+                if (!foundTalk) {
+                    req.flash("error", "Talk not found.");
+                    return res.redirect("back");
+                }
                 // if id matches
                 if (foundTalk.author.id.equals(req.user._id)) {
                     next();

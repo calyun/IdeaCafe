@@ -2,12 +2,10 @@
 <html>
     <head>
         <title>IdeaCafe</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="stylesheets/main.css">
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
     </head>
     <body>
-        
-    <!-- Many bootstrap classes. Experiment! -->
         
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -21,7 +19,7 @@
                     <li><a href="/talks/new"> New </a></li>
                     <% if (!currentUser){ %>
                         <li><a href="/login"> Login </a></li>
-                        <li><a href="/register"> Sign Up </a></li>
+                        <li><a href="/register"> Register </a></li>
                     <% } else { %>
                         <li><a href="/logout">Logout</a></li>
                         <li><a>Signed In as <strong><%= currentUser.username %></strong></a></li>
