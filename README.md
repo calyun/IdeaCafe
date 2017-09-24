@@ -9,6 +9,8 @@ Post and comment on TED talks
 * (Future) Ranking of talks
 * (Future) Recommendation of talks based on user ratings and view history
 
-Inspired by Colt Steele's Udemy course "The Web Developer's Bootcamp".
+[Heroku app](https://idea-cafe.herokuapp.com/)
+
+Inspired by Colt Steele's Udemy course _The Web Developer Bootcamp_.
 
 Videos copyright TED.
